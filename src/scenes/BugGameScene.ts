@@ -2,7 +2,7 @@ import Basic from "@default/Basic";
 import gameConfig from "@config/gameConfig";
 import AssetLoaderService from "@services/AssetLoaderService";
 
-class BugGame extends Basic
+class BugGameScene extends Basic
 {
     preload(){
         const urlCodeAcademy = 'https://content.codecademy.com/courses/learn-phaser'
@@ -228,4 +228,4 @@ class BugGame extends Basic
     }
 }
 
-export default BugGame;
+export default BugGameScene;
