@@ -44,12 +44,3 @@ jobs:
           github_token: ${{ secrets.MAIN_ACCESS }}
           publish_dir:  ./build
         
-      - name: Check directory
-        run: |
-          ls -l
-          ls -l build
-          pwd
-
-      - name: Deploy to GitHub Pages
-        id: deployment
-        uses: actions/deploy-pages@v4
