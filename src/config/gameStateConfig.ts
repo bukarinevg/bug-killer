@@ -1,6 +1,6 @@
 
 const gameStateConfig = {
-    active: false,
+    active: true,
     // scoreText: 'Enemies Killed ',
     player: null,
     cursors: [],

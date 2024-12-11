@@ -8,8 +8,8 @@ class Basic extends Phaser.Scene{
     gameStateService: GameStateService;
     gameState: GameState;
     
-    constructor(config = {}){
-        super();
+    constructor({key}: {key: string}){
+        super({key});
         this.gameStateService = new GameStateService();
         this.gameState = this.gameStateService.getGameState();
     }

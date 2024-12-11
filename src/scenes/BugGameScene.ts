@@ -4,6 +4,10 @@ import AssetLoaderService from "@services/AssetLoaderService";
 
 class BugGameScene extends Basic
 {
+    constructor(){
+        super({key: "BugGameScene"});
+    }
+
     preload(){
         const urlCodeAcademy = 'https://content.codecademy.com/courses/learn-phaser'
         const urlBugInvaders = `${urlCodeAcademy}/Bug%20Invaders`;
@@ -22,36 +26,13 @@ class BugGameScene extends Basic
     }
  
     create (){
-        if(!this.input.keyboard){
-            alert("No keyboard detected");
-            return;
-        }
-
-        const welcomeText = this.add.text( gameConfig.width * 0.5,  gameConfig.height * 0.5, "Welcome to Bug Invaders", {
-                fontSize: "2rem", 
-                color: "black",
-                shadow: { fill: true, blur: 0, offsetY: 0 }
-            })
-            .setOrigin(0.5);
-
-        const startText = this.add.text( gameConfig.width * 0.5, gameConfig.height * 0.75, "Press F to start the game", { 
-                fontSize: "1rem", 
-                color: "black",
-                shadow: { fill: true, blur: 0, offsetY: 0 }
-            })
-            .setOrigin(0.5);
-
         this.gameState.levelText = this.add.text( gameConfig.width * 0.5, 10, `Level ${this.gameState.currentLevel}`, {
             fontSize: "2rem", 
             color: "black",
             shadow: { fill: true, blur: 1, offsetY: 0, offsetX: 0 },
             fontStyle: "fantasy"
-        })
-        .setVisible(false);
+        });
 
-        this.gameState.welcomeTextGroup = this.add.group();
-        this.gameState.welcomeTextGroup.add(welcomeText);
-        this.gameState.welcomeTextGroup.add(startText);
         // Creating static platform
         const platformPosition = {
             x: gameConfig.width / 2,
@@ -61,33 +42,30 @@ class BugGameScene extends Basic
         let platform = platformGroup
             .create(platformPosition.x, platformPosition.y, "platform")
             .setScale(1, 0.3)
-            .refreshBody()
-            .setVisible(false);
+            .refreshBody();
         platform.displayWidth = gameConfig.width;
         this.gameState.platform = platform;
         let enemyPellets = this.physics.add.group();
         this.gameState.enemyPellets = enemyPellets;
     
-        this.gameState.cursors = this.input.keyboard.createCursorKeys();
+        this.gameState.cursors = this.input.keyboard!.createCursorKeys();
         // Displays the initial number of bugs, this value is initially hardcoded as 24
         this.gameState.scoreText = this.add.text( gameConfig.width /2 , platformPosition.y , "Bugs Left: ", {
             fontSize: "15px"
         })
-        .setVisible(false)
         .setOrigin(0.5, 0.5)
         ;
     
         // Uses the physics plugin to create Codey
         // Create Collider objects
         this.gameState.player = this.physics.add.sprite(225, 450, "codey")
-            .setScale(0.5)
-            .setVisible(false);
+            .setScale(0.5);
         this.gameState.player.setCollideWorldBounds(true);
         this.physics.add.collider(this.gameState.player, platform);
         // Create enemies
         this.gameState.enemies = this.physics.add.group();
         this.generateEnemies(this.gameState.enemies);
-        this.gameState.enemies.setVisible(false);
+        this.gameState.enemies;
 
         const genEnemyPellet = () => {
             if(!this.gameState.enemies || !this.gameState.enemyPellets || !this.gameState.active) return;
@@ -111,7 +89,7 @@ class BugGameScene extends Basic
         this.gameState.playerProjectile = this.physics.add.group();
 
         // Begin the game
-        this.input.keyboard.on("keydown-F", () => {
+        this.input.keyboard!.on("keydown-F", () => {
             if(this.gameState.lostState) {
                 this.restartGame();
                 return;
@@ -146,13 +124,6 @@ class BugGameScene extends Basic
         if(!this.gameState.active || !this.gameState.cursors || !this.gameState.player || !this.gameState.enemies  ) {
             return;
         }
-
-        this.gameState.welcomeTextGroup!.setVisible(false);
-        this.gameState.player.setVisible(true);
-        this.gameState.enemies.setVisible(true);
-        this.gameState.scoreText!.setVisible(true);
-        this.gameState.platform!.setVisible(true);
-        this.gameState.levelText!.setVisible(true);
         this.showScore();
 
         const controlEnemiesPositioning = () => {

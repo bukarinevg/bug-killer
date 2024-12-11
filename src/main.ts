@@ -1,12 +1,13 @@
 import gameConfig from '@config/gameConfig';
 import BugGameScene from '@scenes/BugGameScene';
+import StartScene from '@scenes/StartScene';
 
 const config = {
     type: Phaser.AUTO,
     width: gameConfig.width,
     height: gameConfig.height,
     backgroundColor: gameConfig.backgroundColor,
-    scene: [BugGameScene, StartScene],
+    scene: [StartScene, BugGameScene],
     physics: {
         default: 'arcade',
         arcade: {
