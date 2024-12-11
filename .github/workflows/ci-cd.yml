@@ -37,10 +37,10 @@ jobs:
           ls -l 
           ls -l build
 
-    #   - name: Deploy to GitHub Pages
-    #     if: github.event_name == 'push'
-    #     uses: peaceiris/actions-gh-pages@v4
-    #     with:
-    #       github_token: ${{ secrets.MAIN_ACCESS }}
-    #       publish_dir:  ./
+      - name: Deploy to GitHub Pages
+        if: github.event_name == 'push'
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          github_token: ${{ secrets.MAIN_ACCESS }}
+          publish_dir:  ./
         
