@@ -50,3 +50,8 @@ jobs:
         with:
           github_token: ${{ secrets.MAIN_ACCESS }}
           publish_dir: ./build
+        
+      - name: Check directory
+        run: |
+          ls -l
+          ls -l build
