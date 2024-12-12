@@ -15,6 +15,9 @@ class GameState {
     enemyPellets?: Phaser.Physics.Arcade.Group;
     welcomeTextGroup?: Phaser.GameObjects.Group;
     lostState: boolean = false;   
+    mainAudio?: Phaser.Sound.BaseSound;
+    loseAudio?: Phaser.Sound.BaseSound;
+    winAudio?: Phaser.Sound.BaseSound;
 
     constructor({
         active,

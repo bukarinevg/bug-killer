@@ -16,6 +16,7 @@
       "@default/*": ["src/*"],
       "@utils/*": ["src/utils/*"],
       "@managers/*": ["src/managers/*"],
+      "@assets/*": ["src/assets/*"],
     }
   },
   "include": ["src/**/*"]

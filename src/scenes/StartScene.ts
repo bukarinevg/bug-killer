@@ -3,8 +3,13 @@ import gameConfig from "@config/gameConfig";
 import Basic from "@default/Basic";
 
 class StartScene extends Phaser.Scene{
+
     constructor(){
         super({key: "StartSceneUniqueKey"});
+    }
+
+    preload(){
+        this.load.setBaseURL('https://labs.phaser.io');
     }
 
     create(){

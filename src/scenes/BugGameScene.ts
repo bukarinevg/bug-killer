@@ -2,6 +2,7 @@ import Basic from "@default/Basic";
 import gameConfig from "@config/gameConfig";
 import AssetLoaderService from "@services/AssetLoaderService";
 
+
 class BugGameScene extends Basic
 {
     constructor(){
@@ -10,10 +11,11 @@ class BugGameScene extends Basic
 
     preload(){
         const urlCodeAcademy = 'https://content.codecademy.com/courses/learn-phaser'
+        const labsPhaser = 'https://labs.phaser.io';
         const urlBugInvaders = `${urlCodeAcademy}/Bug%20Invaders`;
         const urlPhysics = `${urlCodeAcademy}/physics`;
 
-        AssetLoaderService.loadAsset(this, [
+        AssetLoaderService.loadAssetImage(this, [
             { key: "bug1", path: `${urlBugInvaders}/bug_1.png` },
             { key: "bug2", path: `${urlBugInvaders}/bug_2.png` },
             { key: "bug3", path: `${urlBugInvaders}/bug_3.png` },
@@ -22,35 +24,49 @@ class BugGameScene extends Basic
             { key: "enemyProjectile", path: `${urlBugInvaders}/bugPellet.png` },
             { key: "playerProjectile", path: `${urlBugInvaders}/bugRepellent.png` },
         ]);
+        AssetLoaderService.loadAssetAudio(this, [
+            { key: "mainAudio", path: `${labsPhaser}/assets/audio/CatAstroPhi_shmup_normal.mp3` },
+            { key: "winAudio", path: "/src/assets/audio/win_sound.mp3" },
+            { key: "loseAudio", path: "/src/assets/audio/lose_sound.mp3" },
+        ]);
        
     }
  
     create (){
+        const genEnemyPellet = () => {
+            if(!this.gameState.enemies || !this.gameState.enemyPellets || !this.gameState.active) return;
+            let i = 0;
+            while( i < this.gameState.currentLevel) {
+                let randomBug: any = Phaser.Utils.Array.GetRandom(
+                    this.gameState.enemies.getChildren()
+                );
+                this.gameState.enemyPellets.create(randomBug.x, randomBug.y, "enemyProjectile");
+                i++;
+            }
+        };
+
+        this.gameState.cursors = this.input.keyboard!.createCursorKeys();
+        this.initSounds();
+
+        const platformPosition = {
+            x: gameConfig.width / 2,
+            y: gameConfig.height -10
+        }
+        const platform = this.initPlatform(platformPosition);
+
+        let enemyPellets = this.physics.add.group();
+        this.gameState.enemyPellets = enemyPellets;
+
+        this.gameState.mainAudio!.play();
+
         this.gameState.levelText = this.add.text( gameConfig.width * 0.5, 10, `Level ${this.gameState.currentLevel}`, {
             fontSize: "2rem", 
             color: "black",
             shadow: { fill: true, blur: 1, offsetY: 0, offsetX: 0 },
             fontStyle: "fantasy"
         });
-
-        // Creating static platform
-        const platformPosition = {
-            x: gameConfig.width / 2,
-            y: gameConfig.height -10
-        }
-        let platformGroup = this.physics.add.staticGroup();
-        let platform = platformGroup
-            .create(platformPosition.x, platformPosition.y, "platform")
-            .setScale(1, 0.3)
-            .refreshBody();
-        platform.displayWidth = gameConfig.width;
-        this.gameState.platform = platform;
-        let enemyPellets = this.physics.add.group();
-        this.gameState.enemyPellets = enemyPellets;
-    
-        this.gameState.cursors = this.input.keyboard!.createCursorKeys();
         // Displays the initial number of bugs, this value is initially hardcoded as 24
-        this.gameState.scoreText = this.add.text( gameConfig.width /2 , platformPosition.y , "Bugs Left: ", {
+        this.gameState.scoreText = this.add.text( platformPosition.x , platformPosition.y , "Bugs Left: ", {
             fontSize: "15px"
         })
         .setOrigin(0.5, 0.5)
@@ -66,19 +82,6 @@ class BugGameScene extends Basic
         this.gameState.enemies = this.physics.add.group();
         this.generateEnemies(this.gameState.enemies);
         this.gameState.enemies;
-
-        const genEnemyPellet = () => {
-            if(!this.gameState.enemies || !this.gameState.enemyPellets || !this.gameState.active) return;
-            let i = 0;
-            while( i < this.gameState.currentLevel) {
-                let randomBug: any = Phaser.Utils.Array.GetRandom(
-                    this.gameState.enemies.getChildren()
-                );
-                this.gameState.enemyPellets.create(randomBug.x, randomBug.y, "enemyProjectile");
-                i++;
-            }
-        };
-
         // Create enemy projectiles
         this.gameState.pelletsLoop = this.time.addEvent({
             delay: 300,
@@ -88,7 +91,7 @@ class BugGameScene extends Basic
         });
         this.gameState.playerProjectile = this.physics.add.group();
 
-        // Begin the game
+        // rule restart the game
         this.input.keyboard!.on("keydown-F", () => {
             if(this.gameState.lostState) {
                 this.restartGame();
@@ -105,6 +108,7 @@ class BugGameScene extends Basic
         });
         this.physics.add.collider(enemyPellets, this.gameState.player, (player, pelet) => {
             this.gameState.lostState = true;
+            this.gameState.loseAudio!.play();
             this.finishGame();
         });
         this.physics.add.collider( this.gameState.enemies, this.gameState.playerProjectile, (bug, repellent) => {
@@ -113,6 +117,7 @@ class BugGameScene extends Basic
         });
         this.physics.add.collider(this.gameState.enemies, this.gameState.player, (player,pelet) => {
             this.gameState.lostState = true;
+            this.gameState.loseAudio!.play();
             this.finishGame();
         });
         this.physics.add.collider(platform, this.gameState.enemies, ( platform, enemy) => {
@@ -196,6 +201,30 @@ class BugGameScene extends Basic
         setEnemmiesMovement();
         controlEnemiesPositioning();
   
+    }
+
+    initSounds(){
+        this.gameState.mainAudio = this.sound.add("mainAudio", { loop: true });
+        this.gameState.loseAudio = this.sound.add("loseAudio");
+        this.gameState.winAudio = this.sound.add("winAudio");
+    }
+
+    initPlatform(
+        { x, y }: { x: number, y: number } = { x: gameConfig.width / 2, y: gameConfig.height -10 }
+    ) : Phaser.Physics.Arcade.StaticGroup {
+        const platformPosition = {
+            x: x,
+            y: y,
+        }
+        let platformGroup = this.physics.add.staticGroup();
+        let platform = platformGroup
+            .create(platformPosition.x, platformPosition.y, "platform")
+            .setScale(1, 0.3)
+            .refreshBody();
+        platform.displayWidth = gameConfig.width;
+        this.gameState.platform = platform;
+        
+        return platform;
     }
 }
 

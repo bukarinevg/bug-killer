@@ -34,6 +34,7 @@ class Basic extends Phaser.Scene{
     }
 
     finishGame(){
+        this.gameState.mainAudio?.stop();
         this.gameState.active = false;
         this.physics.pause();
         this.gameState.pelletsLoop.destroy();
