@@ -91,15 +91,12 @@ class BugGameScene extends Basic
         });
         this.gameState.playerProjectile = this.physics.add.group();
 
-        // rule restart the game
+        // rule restart the Game
         this.input.keyboard!.on("keydown-F", () => {
-            if(this.gameState.lostState) {
-                this.restartGame();
-                return;
-            }
             if(this.gameState.active) return;
             console.log("Starting game");
             this.gameState.active = true;
+            this.restartGame();
         });
 
         //coliders
@@ -179,7 +176,7 @@ class BugGameScene extends Basic
         }
         
         // Add logic for ending the game below:
-        if (this.numOfTotalEnemies() === 0 && this.gameState.currentLevel < 3) {
+        if (this.numOfTotalEnemies() === 0 && this.gameState.currentLevel < gameConfig.maxLevel) {
             this.gameState.currentLevel++;
             this.gameState.levelText!.setText(`Level ${this.gameState.currentLevel}`);
             this.gameState.active = true;
@@ -188,13 +185,13 @@ class BugGameScene extends Basic
             this.generateEnemies(this.gameState.enemies);
         }     
 
-        if (this.numOfTotalEnemies() === 0 && this.gameState.currentLevel === 3) {
+        if (this.numOfTotalEnemies() === 0 && this.gameState.currentLevel === gameConfig.maxLevel) {
             this.add.text(gameConfig.width *0.5, gameConfig.height * 0.25, "You won!", {
                 fontSize: "3rem",
                 color: "green"
             })
             .setOrigin(0.5, 0.5);
-            ;
+            this.gameState.winAudio!.play();
             this.finishGame();
             return;
         }
