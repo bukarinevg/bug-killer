@@ -28,9 +28,10 @@ var BugGameScene = /** @class */ (function (_super) {
     }
     BugGameScene.prototype.preload = function () {
         var urlCodeAcademy = 'https://content.codecademy.com/courses/learn-phaser';
+        var labsPhaser = 'https://labs.phaser.io';
         var urlBugInvaders = "".concat(urlCodeAcademy, "/Bug%20Invaders");
         var urlPhysics = "".concat(urlCodeAcademy, "/physics");
-        AssetLoaderService_1.default.loadAsset(this, [
+        AssetLoaderService_1.default.loadAssetImage(this, [
             { key: "bug1", path: "".concat(urlBugInvaders, "/bug_1.png") },
             { key: "bug2", path: "".concat(urlBugInvaders, "/bug_2.png") },
             { key: "bug3", path: "".concat(urlBugInvaders, "/bug_3.png") },
@@ -39,32 +40,42 @@ var BugGameScene = /** @class */ (function (_super) {
             { key: "enemyProjectile", path: "".concat(urlBugInvaders, "/bugPellet.png") },
             { key: "playerProjectile", path: "".concat(urlBugInvaders, "/bugRepellent.png") },
         ]);
+        AssetLoaderService_1.default.loadAssetAudio(this, [
+            { key: "mainAudio", path: "".concat(labsPhaser, "/assets/audio/CatAstroPhi_shmup_normal.mp3") },
+            { key: "winAudio", path: "/src/assets/audio/win_sound.mp3" },
+            { key: "loseAudio", path: "/src/assets/audio/lose_sound.mp3" },
+        ]);
     };
     BugGameScene.prototype.create = function () {
         var _this = this;
+        var genEnemyPellet = function () {
+            if (!_this.gameState.enemies || !_this.gameState.enemyPellets || !_this.gameState.active)
+                return;
+            var i = 0;
+            while (i < _this.gameState.currentLevel) {
+                var randomBug = Phaser.Utils.Array.GetRandom(_this.gameState.enemies.getChildren());
+                _this.gameState.enemyPellets.create(randomBug.x, randomBug.y, "enemyProjectile");
+                i++;
+            }
+        };
+        this.gameState.cursors = this.input.keyboard.createCursorKeys();
+        this.initSounds();
+        var platformPosition = {
+            x: gameConfig_1.default.width / 2,
+            y: gameConfig_1.default.height - 10
+        };
+        var platform = this.initPlatform(platformPosition);
+        var enemyPellets = this.physics.add.group();
+        this.gameState.enemyPellets = enemyPellets;
+        this.gameState.mainAudio.play();
         this.gameState.levelText = this.add.text(gameConfig_1.default.width * 0.5, 10, "Level ".concat(this.gameState.currentLevel), {
             fontSize: "2rem",
             color: "black",
             shadow: { fill: true, blur: 1, offsetY: 0, offsetX: 0 },
             fontStyle: "fantasy"
         });
-        // Creating static platform
-        var platformPosition = {
-            x: gameConfig_1.default.width / 2,
-            y: gameConfig_1.default.height - 10
-        };
-        var platformGroup = this.physics.add.staticGroup();
-        var platform = platformGroup
-            .create(platformPosition.x, platformPosition.y, "platform")
-            .setScale(1, 0.3)
-            .refreshBody();
-        platform.displayWidth = gameConfig_1.default.width;
-        this.gameState.platform = platform;
-        var enemyPellets = this.physics.add.group();
-        this.gameState.enemyPellets = enemyPellets;
-        this.gameState.cursors = this.input.keyboard.createCursorKeys();
         // Displays the initial number of bugs, this value is initially hardcoded as 24
-        this.gameState.scoreText = this.add.text(gameConfig_1.default.width / 2, platformPosition.y, "Bugs Left: ", {
+        this.gameState.scoreText = this.add.text(platformPosition.x, platformPosition.y, "Bugs Left: ", {
             fontSize: "15px"
         })
             .setOrigin(0.5, 0.5);
@@ -78,16 +89,6 @@ var BugGameScene = /** @class */ (function (_super) {
         this.gameState.enemies = this.physics.add.group();
         this.generateEnemies(this.gameState.enemies);
         this.gameState.enemies;
-        var genEnemyPellet = function () {
-            if (!_this.gameState.enemies || !_this.gameState.enemyPellets || !_this.gameState.active)
-                return;
-            var i = 0;
-            while (i < _this.gameState.currentLevel) {
-                var randomBug = Phaser.Utils.Array.GetRandom(_this.gameState.enemies.getChildren());
-                _this.gameState.enemyPellets.create(randomBug.x, randomBug.y, "enemyProjectile");
-                i++;
-            }
-        };
         // Create enemy projectiles
         this.gameState.pelletsLoop = this.time.addEvent({
             delay: 300,
@@ -96,7 +97,7 @@ var BugGameScene = /** @class */ (function (_super) {
             loop: true,
         });
         this.gameState.playerProjectile = this.physics.add.group();
-        // Begin the game
+        // rule restart the game
         this.input.keyboard.on("keydown-F", function () {
             if (_this.gameState.lostState) {
                 _this.restartGame();
@@ -113,6 +114,7 @@ var BugGameScene = /** @class */ (function (_super) {
         });
         this.physics.add.collider(enemyPellets, this.gameState.player, function (player, pelet) {
             _this.gameState.lostState = true;
+            _this.gameState.loseAudio.play();
             _this.finishGame();
         });
         this.physics.add.collider(this.gameState.enemies, this.gameState.playerProjectile, function (bug, repellent) {
@@ -121,6 +123,7 @@ var BugGameScene = /** @class */ (function (_super) {
         });
         this.physics.add.collider(this.gameState.enemies, this.gameState.player, function (player, pelet) {
             _this.gameState.lostState = true;
+            _this.gameState.loseAudio.play();
             _this.finishGame();
         });
         this.physics.add.collider(platform, this.gameState.enemies, function (platform, enemy) {
@@ -201,6 +204,26 @@ var BugGameScene = /** @class */ (function (_super) {
         }
         setEnemmiesMovement();
         controlEnemiesPositioning();
+    };
+    BugGameScene.prototype.initSounds = function () {
+        this.gameState.mainAudio = this.sound.add("mainAudio", { loop: true });
+        this.gameState.loseAudio = this.sound.add("loseAudio");
+        this.gameState.winAudio = this.sound.add("winAudio");
+    };
+    BugGameScene.prototype.initPlatform = function (_a) {
+        var _b = _a === void 0 ? { x: gameConfig_1.default.width / 2, y: gameConfig_1.default.height - 10 } : _a, x = _b.x, y = _b.y;
+        var platformPosition = {
+            x: x,
+            y: y,
+        };
+        var platformGroup = this.physics.add.staticGroup();
+        var platform = platformGroup
+            .create(platformPosition.x, platformPosition.y, "platform")
+            .setScale(1, 0.3)
+            .refreshBody();
+        platform.displayWidth = gameConfig_1.default.width;
+        this.gameState.platform = platform;
+        return platform;
     };
     return BugGameScene;
 }(Basic_1.default));

@@ -36,6 +36,7 @@ module.exports = {
             '@default': path.resolve(__dirname, 'src/'),
             '@utils': path.resolve(__dirname, 'src/utils/'),
             '@managers': path.resolve(__dirname, 'src/managers/'),
+            '@assets': path.resolve(__dirname, 'src/assets/'),
         }
     },
     resolveLoader: {

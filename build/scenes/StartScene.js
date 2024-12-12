@@ -25,6 +25,9 @@ var StartScene = /** @class */ (function (_super) {
     function StartScene() {
         return _super.call(this, { key: "StartSceneUniqueKey" }) || this;
     }
+    StartScene.prototype.preload = function () {
+        this.load.setBaseURL('https://labs.phaser.io');
+    };
     StartScene.prototype.create = function () {
         if (!this.input.keyboard) {
             alert("No keyboard detected");

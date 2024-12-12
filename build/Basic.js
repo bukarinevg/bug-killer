@@ -48,6 +48,8 @@ var Basic = /** @class */ (function (_super) {
         return totalEnemies;
     };
     Basic.prototype.finishGame = function () {
+        var _a;
+        (_a = this.gameState.mainAudio) === null || _a === void 0 ? void 0 : _a.stop();
         this.gameState.active = false;
         this.physics.pause();
         this.gameState.pelletsLoop.destroy();
