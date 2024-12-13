@@ -11,9 +11,10 @@ class BugGameScene extends Basic
 
     preload(){
         const urlCodeAcademy = 'https://content.codecademy.com/courses/learn-phaser'
-        const labsPhaser = 'https://labs.phaser.io';
+        const urlLabsPhaser = 'https://labs.phaser.io';
         const urlBugInvaders = `${urlCodeAcademy}/Bug%20Invaders`;
         const urlPhysics = `${urlCodeAcademy}/physics`;
+        const urlSounds = 'https://cdn.phaserfiles.com/v385'
 
         AssetLoaderService.loadAssetImage(this, [
             { key: "bug1", path: `${urlBugInvaders}/bug_1.png` },
@@ -25,9 +26,9 @@ class BugGameScene extends Basic
             { key: "playerProjectile", path: `${urlBugInvaders}/bugRepellent.png` },
         ]);
         AssetLoaderService.loadAssetAudio(this, [
-            { key: "mainAudio", path: `${labsPhaser}/assets/audio/CatAstroPhi_shmup_normal.mp3` },
-            { key: "winAudio", path: "/src/assets/audio/win_sound.mp3" },
-            { key: "loseAudio", path: "/src/assets/audio/lose_sound.mp3" },
+            { key: "mainAudio", path: `${urlLabsPhaser}/assets/audio/CatAstroPhi_shmup_normal.mp3` },
+            { key: "winAudio", path: "./assets/audio/win_sound.mp3" },
+            { key: "loseAudio", path: "./assets/audio/lose_sound.mp3" },
         ]);
        
     }
