@@ -36,25 +36,28 @@ class Basic extends Phaser.Scene{
     finishGame(){
         this.gameState.mainAudio?.stop();
         this.gameState.active = false;
+        this.gameState.score = 0;
         this.physics.pause();
         this.gameState.pelletsLoop.destroy();
+        
         this.add.text(gameConfig.width / 2, gameConfig.height / 2, "Game Over", {
             fontSize: "2rem",
             color: "#000"
         })
         .setDepth(1)
         .setOrigin(0.5, 0.5);
+
         this.add.text( gameConfig.width * 0.5,  gameConfig.height * 0.75, "Press F to start the game", { 
             fontSize: "1rem", 
             color: "black",
             shadow: { fill: true, blur: 0, offsetY: 0 }
-            })
-            .setOrigin(0.5);
+        })
+        .setOrigin(0.5);
     }
     
     showScore(){
         if(!this.gameState.scoreText  || !this.gameState.enemies ) return ;  
-        this.gameState.scoreText.setText(`Enemies Left: ${this.numOfTotalEnemies()}`);
+        this.gameState.scoreText.setText(`Enemies Killed: ${this.gameState.score}`);
     }   
 
     restartGame() {
@@ -70,7 +73,7 @@ class Basic extends Phaser.Scene{
         for (let yVal = 1; yVal <= 3; yVal++) {
             for (let xVal = 1; xVal <= 8; xVal++) {
                 enemies
-                    .create(50 * xVal, 50 * yVal, "bug1")
+                    .create(50 * xVal, 50 * yVal, `bug${this.gameState.currentLevel}`)
                     .setGravityY(-gameConfig.gravity.y)
                     .setScale(0.6);
             }
