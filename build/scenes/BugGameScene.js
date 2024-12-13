@@ -28,9 +28,10 @@ var BugGameScene = /** @class */ (function (_super) {
     }
     BugGameScene.prototype.preload = function () {
         var urlCodeAcademy = 'https://content.codecademy.com/courses/learn-phaser';
-        var labsPhaser = 'https://labs.phaser.io';
+        var urlLabsPhaser = 'https://labs.phaser.io';
         var urlBugInvaders = "".concat(urlCodeAcademy, "/Bug%20Invaders");
         var urlPhysics = "".concat(urlCodeAcademy, "/physics");
+        var urlSounds = 'https://cdn.phaserfiles.com/v385';
         AssetLoaderService_1.default.loadAssetImage(this, [
             { key: "bug1", path: "".concat(urlBugInvaders, "/bug_1.png") },
             { key: "bug2", path: "".concat(urlBugInvaders, "/bug_2.png") },
@@ -41,9 +42,9 @@ var BugGameScene = /** @class */ (function (_super) {
             { key: "playerProjectile", path: "".concat(urlBugInvaders, "/bugRepellent.png") },
         ]);
         AssetLoaderService_1.default.loadAssetAudio(this, [
-            { key: "mainAudio", path: "".concat(labsPhaser, "/assets/audio/CatAstroPhi_shmup_normal.mp3") },
-            { key: "winAudio", path: "/src/assets/audio/win_sound.mp3" },
-            { key: "loseAudio", path: "/src/assets/audio/lose_sound.mp3" },
+            { key: "mainAudio", path: "".concat(urlLabsPhaser, "/assets/audio/CatAstroPhi_shmup_normal.mp3") },
+            { key: "winAudio", path: "./assets/audio/win_sound.mp3" },
+            { key: "loseAudio", path: "./assets/audio/lose_sound.mp3" },
         ]);
     };
     BugGameScene.prototype.create = function () {
@@ -97,16 +98,13 @@ var BugGameScene = /** @class */ (function (_super) {
             loop: true,
         });
         this.gameState.playerProjectile = this.physics.add.group();
-        // rule restart the game
+        // rule restart the Game
         this.input.keyboard.on("keydown-F", function () {
-            if (_this.gameState.lostState) {
-                _this.restartGame();
-                return;
-            }
             if (_this.gameState.active)
                 return;
             console.log("Starting game");
             _this.gameState.active = true;
+            _this.restartGame();
         });
         //coliders
         this.physics.add.collider(enemyPellets, platform, function (platform, pelet) {
@@ -184,7 +182,7 @@ var BugGameScene = /** @class */ (function (_super) {
             managePlayerKeyPress();
         }
         // Add logic for ending the game below:
-        if (this.numOfTotalEnemies() === 0 && this.gameState.currentLevel < 3) {
+        if (this.numOfTotalEnemies() === 0 && this.gameState.currentLevel < gameConfig_1.default.maxLevel) {
             this.gameState.currentLevel++;
             this.gameState.levelText.setText("Level ".concat(this.gameState.currentLevel));
             this.gameState.active = true;
@@ -192,13 +190,13 @@ var BugGameScene = /** @class */ (function (_super) {
             this.physics.resume();
             this.generateEnemies(this.gameState.enemies);
         }
-        if (this.numOfTotalEnemies() === 0 && this.gameState.currentLevel === 3) {
+        if (this.numOfTotalEnemies() === 0 && this.gameState.currentLevel === gameConfig_1.default.maxLevel) {
             this.add.text(gameConfig_1.default.width * 0.5, gameConfig_1.default.height * 0.25, "You won!", {
                 fontSize: "3rem",
                 color: "green"
             })
                 .setOrigin(0.5, 0.5);
-            ;
+            this.gameState.winAudio.play();
             this.finishGame();
             return;
         }

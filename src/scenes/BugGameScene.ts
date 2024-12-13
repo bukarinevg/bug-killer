@@ -11,9 +11,10 @@ class BugGameScene extends Basic
 
     preload(){
         const urlCodeAcademy = 'https://content.codecademy.com/courses/learn-phaser'
-        const labsPhaser = 'https://labs.phaser.io';
+        const urlLabsPhaser = 'https://labs.phaser.io';
         const urlBugInvaders = `${urlCodeAcademy}/Bug%20Invaders`;
         const urlPhysics = `${urlCodeAcademy}/physics`;
+        const urlSounds = 'https://cdn.phaserfiles.com/v385'
 
         AssetLoaderService.loadAssetImage(this, [
             { key: "bug1", path: `${urlBugInvaders}/bug_1.png` },
@@ -25,9 +26,9 @@ class BugGameScene extends Basic
             { key: "playerProjectile", path: `${urlBugInvaders}/bugRepellent.png` },
         ]);
         AssetLoaderService.loadAssetAudio(this, [
-            { key: "mainAudio", path: `${labsPhaser}/assets/audio/CatAstroPhi_shmup_normal.mp3` },
-            { key: "winAudio", path: "/src/assets/audio/win_sound.mp3" },
-            { key: "loseAudio", path: "/src/assets/audio/lose_sound.mp3" },
+            { key: "mainAudio", path: `${urlLabsPhaser}/assets/audio/CatAstroPhi_shmup_normal.mp3` },
+            { key: "winAudio", path: "./assets/audio/win_sound.mp3" },
+            { key: "loseAudio", path: "./assets/audio/lose_sound.mp3" },
         ]);
        
     }
@@ -91,15 +92,12 @@ class BugGameScene extends Basic
         });
         this.gameState.playerProjectile = this.physics.add.group();
 
-        // rule restart the game
+        // rule restart the Game
         this.input.keyboard!.on("keydown-F", () => {
-            if(this.gameState.lostState) {
-                this.restartGame();
-                return;
-            }
             if(this.gameState.active) return;
             console.log("Starting game");
             this.gameState.active = true;
+            this.restartGame();
         });
 
         //coliders
@@ -179,7 +177,7 @@ class BugGameScene extends Basic
         }
         
         // Add logic for ending the game below:
-        if (this.numOfTotalEnemies() === 0 && this.gameState.currentLevel < 3) {
+        if (this.numOfTotalEnemies() === 0 && this.gameState.currentLevel < gameConfig.maxLevel) {
             this.gameState.currentLevel++;
             this.gameState.levelText!.setText(`Level ${this.gameState.currentLevel}`);
             this.gameState.active = true;
@@ -188,13 +186,13 @@ class BugGameScene extends Basic
             this.generateEnemies(this.gameState.enemies);
         }     
 
-        if (this.numOfTotalEnemies() === 0 && this.gameState.currentLevel === 3) {
+        if (this.numOfTotalEnemies() === 0 && this.gameState.currentLevel === gameConfig.maxLevel) {
             this.add.text(gameConfig.width *0.5, gameConfig.height * 0.25, "You won!", {
                 fontSize: "3rem",
                 color: "green"
             })
             .setOrigin(0.5, 0.5);
-            ;
+            this.gameState.winAudio!.play();
             this.finishGame();
             return;
         }
