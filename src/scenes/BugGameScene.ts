@@ -61,7 +61,7 @@ class BugGameScene extends Basic
         this.gameState.mainAudio!.play();
 
         this.gameState.levelText = this.add.text( gameConfig.width * 0.5, 10, `Level ${this.gameState.currentLevel}`, {
-            fontSize: "2rem", 
+            fontSize: "15px", 
             color: "black",
             shadow: { fill: true, blur: 1, offsetY: 0, offsetX: 0 },
             fontStyle: "fantasy"
@@ -112,6 +112,7 @@ class BugGameScene extends Basic
         this.physics.add.collider( this.gameState.enemies, this.gameState.playerProjectile, (bug, repellent) => {
             bug.destroy();
             repellent.destroy();
+            this.gameState.score! += 1;
         });
         this.physics.add.collider(this.gameState.enemies, this.gameState.player, (player,pelet) => {
             this.gameState.lostState = true;
@@ -181,7 +182,7 @@ class BugGameScene extends Basic
             this.gameState.currentLevel++;
             this.gameState.levelText!.setText(`Level ${this.gameState.currentLevel}`);
             this.gameState.active = true;
-            this.gameState.enemyVelocity  = this.gameState.enemyVelocity * 1.5;
+            this.gameState.enemyVelocity  = this.gameState.enemyVelocity * 1.25;
             this.physics.resume();
             this.generateEnemies(this.gameState.enemies);
         }     

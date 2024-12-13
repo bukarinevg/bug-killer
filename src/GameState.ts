@@ -18,6 +18,7 @@ class GameState {
     mainAudio?: Phaser.Sound.BaseSound;
     loseAudio?: Phaser.Sound.BaseSound;
     winAudio?: Phaser.Sound.BaseSound;
+    score?: number = 0;
 
     constructor({
         active,

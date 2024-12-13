@@ -14,7 +14,7 @@ const gameConfig = {
     },     
     enemyScale: 0.7,
     playerScale: 0.5, 
-    maxLevel: 1,
+    maxLevel: 3,
 };
 
 export default gameConfig; 
