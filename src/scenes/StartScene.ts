@@ -40,7 +40,7 @@ class StartScene extends Phaser.Scene{
     }
 
     createWelcomeText(){
-        const welcomeText = this.add.text( gameConfig.width * 0.5,  gameConfig.height * 0.25, "Welcome to Bug Invaders", {
+        const welcomeText = this.add.text( gameConfig.width * 0.5,  gameConfig.height * 0.25, "Welcome to Bug Killer", {
             fontSize: "2rem", 
             color: this.defaultTextColor,
             shadow: { fill: true, blur: 0, offsetY: 0 }
