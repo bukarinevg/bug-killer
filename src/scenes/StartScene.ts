@@ -3,9 +3,11 @@ import gameConfig from "@config/gameConfig";
 import Basic from "@default/Basic";
 
 class StartScene extends Phaser.Scene{
+    defaultTextColor: string;
 
     constructor(){
         super({key: "StartSceneUniqueKey"});
+        this.defaultTextColor = "white"; // Define default text color as a property
     }
 
     preload(){
@@ -17,7 +19,6 @@ class StartScene extends Phaser.Scene{
             alert("No keyboard detected");
             this.add.text( gameConfig.width * 0.5,  gameConfig.height * 0.5, "No keyboard detected", {
                 fontSize: "2rem", 
-                color: "black",
                 shadow: { fill: true, blur: 0, offsetY: 0 }
             })
             .setOrigin(0.5);
@@ -25,23 +26,10 @@ class StartScene extends Phaser.Scene{
             return;
         }
 
-        const welcomeText = this.add.text( gameConfig.width * 0.5,  gameConfig.height * 0.5, "Welcome to Bug Invaders", {
-            fontSize: "2rem", 
-            color: "black",
-            shadow: { fill: true, blur: 0, offsetY: 0 }
-        })
-        .setOrigin(0.5);
+        this.cameras.main.setBackgroundColor('#64b740');
 
-        const startText = this.add.text( gameConfig.width * 0.5, gameConfig.height * 0.75, "Press F to start the game", { 
-                fontSize: "1rem", 
-                color: "black",
-                shadow: { fill: true, blur: 0, offsetY: 0 }
-            })
-            .setOrigin(0.5);
-
-        const welcomeTextGroup = this.add.group();
-        welcomeTextGroup.add(welcomeText);
-        welcomeTextGroup.add(startText);
+        this.createWelcomeText();
+        this.createInstructions();
     }
 
     update(){
@@ -51,7 +39,74 @@ class StartScene extends Phaser.Scene{
         }
     }
 
-   
+    createWelcomeText(){
+        const welcomeText = this.add.text( gameConfig.width * 0.5,  gameConfig.height * 0.25, "Welcome to Bug Invaders", {
+            fontSize: "2rem", 
+            color: this.defaultTextColor,
+            shadow: { fill: true, blur: 0, offsetY: 0 }
+        })
+        .setOrigin(0.5);
+
+        const startText = this.add.text( gameConfig.width * 0.5, gameConfig.height * 0.5, "Press F to start the game", { 
+                fontSize: "1rem", 
+                color: this.defaultTextColor,
+                shadow: { fill: true, blur: 0, offsetY: 0 }
+            })
+            .setOrigin(0.5);
+
+        const welcomeTextGroup = this.add.group();
+        welcomeTextGroup.add(welcomeText);
+        welcomeTextGroup.add(startText);
+    }
+
+    createInstructions(){
+        const instructions = this.add.group();
+
+        const controlsArray = [
+            ['←', '→'],
+            // ['a', 'd'],
+        ];
+        const itemsPerRow = 2;
+
+        controlsArray.forEach((controls, i) => {
+            const yPosition = gameConfig.height * 0.75 + (i * 60);
+
+            controls.forEach((control, j) => {
+                const xPosition = j % itemsPerRow === 0 ? gameConfig.width * 0.25 : gameConfig.width * 0.75;
+
+                const arrowButton = this.add.graphics();
+                arrowButton.fillStyle(0x000000, 0.2);
+                arrowButton.fillRect(xPosition - 25, yPosition - 25, 50, 50); 
+        
+                const arrow = this.add.text(xPosition, yPosition, control, {
+                    fontSize: "1.5rem",
+                    color: this.defaultTextColor
+                }).setOrigin(0.5);
+
+                instructions.add(arrowButton);
+                instructions.add(arrow);
+            });
+        });
+
+        const spaceButton = this.add.graphics();
+        spaceButton.fillStyle(0x000000, 0.2);
+        spaceButton.fillRect(gameConfig.width * 0.5 - 50, gameConfig.height * 0.75 - 25, 100, 50);
+
+        const spaceText = this.add.text(gameConfig.width * 0.5, gameConfig.height * 0.75, 'SPACE', {
+            fontSize: "1.5rem",
+            color: this.defaultTextColor
+        }).setOrigin(0.5);
+
+        const instructionsText = this.add.text( gameConfig.width * 0.5,  gameConfig.height * 0.9, "Use the arrow keys to move and space to shoot", {
+            fontSize: "1rem", 
+            color: this.defaultTextColor,
+            shadow: { fill: true, blur: 0, offsetY: 0 }
+        }).setOrigin(0.5);
+
+        instructions.add(spaceButton);
+        instructions.add(spaceText);
+        instructions.add(instructionsText);
+    }
 
 }
 

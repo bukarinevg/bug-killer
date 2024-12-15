@@ -128,8 +128,6 @@ class BugGameScene extends Basic
         if(!this.gameState.active || !this.gameState.cursors || !this.gameState.player || !this.gameState.enemies  ) {
             return;
         }
-        this.showScore();
-
         const controlEnemiesPositioning = () => {
             if(!this.gameState.enemies) return;
             let sortedEnemiesArray = this.sortedEnemies();
@@ -150,15 +148,18 @@ class BugGameScene extends Basic
                 .create(this.gameState.player.x, this.gameState.player.y, "playerProjectile")
                 .setGravityY(-400);
         }
+        this.gameState.cursors = this.input.keyboard!.createCursorKeys();
 
         const managePlayerKeyPress = () => {
             if (!this.gameState.player || !this.gameState.cursors) return;
             if (Phaser.Input.Keyboard.JustDown(this.gameState.cursors.space!)) {
                 genPlayerProjectile();
             }
-            if (this.gameState.cursors.left!.isDown && this.gameState.player.x > 15) {
+            if ((this.gameState.cursors.left!.isDown || this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.A).isDown) 
+                && this.gameState.player.x > 15) {
                 this.gameState.player.setVelocityX(-150);
-            } else if (this.gameState.cursors.right!.isDown && this.gameState.player.x < gameConfig.width - 15) {
+            } else if ((this.gameState.cursors.right!.isDown || this.input.keyboard!.addKey(Phaser.Input.Keyboard.KeyCodes.D).isDown) 
+                && this.gameState.player.x < gameConfig.width - 15) {
                 this.gameState.player.setVelocityX(150);
             } else {
                 this.gameState.player.setVelocityX(0);
@@ -176,6 +177,8 @@ class BugGameScene extends Basic
         if (this.gameState.active) {
             managePlayerKeyPress();
         }
+
+        this.showScore();
         
         // Add logic for ending the game below:
         if (this.numOfTotalEnemies() === 0 && this.gameState.currentLevel < gameConfig.maxLevel) {
