@@ -134,7 +134,6 @@ var BugGameScene = /** @class */ (function (_super) {
         if (!this.gameState.active || !this.gameState.cursors || !this.gameState.player || !this.gameState.enemies) {
             return;
         }
-        this.showScore();
         var controlEnemiesPositioning = function () {
             if (!_this.gameState.enemies)
                 return;
@@ -156,16 +155,19 @@ var BugGameScene = /** @class */ (function (_super) {
                 .create(_this.gameState.player.x, _this.gameState.player.y, "playerProjectile")
                 .setGravityY(-400);
         };
+        this.gameState.cursors = this.input.keyboard.createCursorKeys();
         var managePlayerKeyPress = function () {
             if (!_this.gameState.player || !_this.gameState.cursors)
                 return;
             if (Phaser.Input.Keyboard.JustDown(_this.gameState.cursors.space)) {
                 genPlayerProjectile();
             }
-            if (_this.gameState.cursors.left.isDown && _this.gameState.player.x > 15) {
+            if ((_this.gameState.cursors.left.isDown || _this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.A).isDown)
+                && _this.gameState.player.x > 15) {
                 _this.gameState.player.setVelocityX(-150);
             }
-            else if (_this.gameState.cursors.right.isDown && _this.gameState.player.x < gameConfig_1.default.width - 15) {
+            else if ((_this.gameState.cursors.right.isDown || _this.input.keyboard.addKey(Phaser.Input.Keyboard.KeyCodes.D).isDown)
+                && _this.gameState.player.x < gameConfig_1.default.width - 15) {
                 _this.gameState.player.setVelocityX(150);
             }
             else {
@@ -182,6 +184,7 @@ var BugGameScene = /** @class */ (function (_super) {
         if (this.gameState.active) {
             managePlayerKeyPress();
         }
+        this.showScore();
         // Add logic for ending the game below:
         if (this.numOfTotalEnemies() === 0 && this.gameState.currentLevel < gameConfig_1.default.maxLevel) {
             this.gameState.currentLevel++;
