@@ -52,7 +52,7 @@ var StartScene = /** @class */ (function (_super) {
         }
     };
     StartScene.prototype.createWelcomeText = function () {
-        var welcomeText = this.add.text(gameConfig_1.default.width * 0.5, gameConfig_1.default.height * 0.25, "Welcome to Bug Invaders", {
+        var welcomeText = this.add.text(gameConfig_1.default.width * 0.5, gameConfig_1.default.height * 0.25, "Welcome to Bug Killer", {
             fontSize: "2rem",
             color: this.defaultTextColor,
             shadow: { fill: true, blur: 0, offsetY: 0 }
