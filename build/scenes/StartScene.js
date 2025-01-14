@@ -31,14 +31,14 @@ var StartScene = /** @class */ (function (_super) {
         this.load.setBaseURL('https://labs.phaser.io');
     };
     StartScene.prototype.create = function () {
-        if (!this.input.keyboard) {
-            alert("No keyboard detected");
-            this.add.text(gameConfig_1.default.width * 0.5, gameConfig_1.default.height * 0.5, "No keyboard detected", {
+        console.log("StartScene");
+        if (!this.input.keyboard || window.innerWidth < gameConfig_1.default.width) {
+            alert("No keyboard detected or screen width is too small");
+            this.add.text(gameConfig_1.default.width * 0.5, gameConfig_1.default.height * 0.5, "No keyboard detected or screen width is too small", {
                 fontSize: "2rem",
                 shadow: { fill: true, blur: 0, offsetY: 0 }
             })
                 .setOrigin(0.5);
-            ;
             return;
         }
         this.cameras.main.setBackgroundColor('#64b740');

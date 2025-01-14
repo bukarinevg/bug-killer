@@ -1,4 +1,5 @@
 const path = require('path');
+const HtmlWebpackPlugin = require('html-webpack-plugin');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
 
 module.exports = {
@@ -43,11 +44,23 @@ module.exports = {
         modules: [path.resolve(__dirname, 'node_modules')],
     },
     mode: 'development',
+    devServer: {
+        port: 3000, // Specify the port you want to use
+        static: {
+            directory: path.join(__dirname, 'build'),
+        },
+        compress: true,
+        hot: true,
+        open: true
+    },
     plugins: [
-        new CopyWebpackPlugin({
-            patterns: [
-                { from: 'index.html', to: 'index.html' }
-            ]
-        })
+        new HtmlWebpackPlugin({
+            template: './index.html', // Path to your index.html file
+        }),
+        // new CopyWebpackPlugin({
+        //     patterns: [
+        //         { from: 'src/assets', to: 'assets' },
+        //     ],
+        // }),
     ],
 };
