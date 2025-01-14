@@ -5,7 +5,8 @@ var GameState = /** @class */ (function () {
         var active = _a.active, scoreText = _a.scoreText, player = _a.player, cursors = _a.cursors, enemies = _a.enemies, pelletsLoop = _a.pelletsLoop, playerProjectile = _a.playerProjectile, enemyVelocity = _a.enemyVelocity, currentLevel = _a.currentLevel;
         this.currentLevel = 1;
         this.lostState = false;
-        console.log("active: ".concat(active));
+        this.score = 0;
+        console.log("active 123: ".concat(active));
         this.active = active;
         this.scoreText = scoreText;
         this.player = player;

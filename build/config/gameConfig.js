@@ -14,5 +14,6 @@ var gameConfig = {
     },
     enemyScale: 0.7,
     playerScale: 0.5,
+    maxLevel: 3,
 };
 exports.default = gameConfig;

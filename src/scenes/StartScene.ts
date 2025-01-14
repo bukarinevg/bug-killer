@@ -15,14 +15,14 @@ class StartScene extends Phaser.Scene{
     }
 
     create(){
-        if(!this.input.keyboard){
-            alert("No keyboard detected");
-            this.add.text( gameConfig.width * 0.5,  gameConfig.height * 0.5, "No keyboard detected", {
-                fontSize: "2rem", 
-                shadow: { fill: true, blur: 0, offsetY: 0 }
+        console.log("StartScene");
+        if (!this.input.keyboard || window.innerWidth < gameConfig.width) {
+            alert("No keyboard detected or screen width is too small");
+            this.add.text(gameConfig.width * 0.5, gameConfig.height * 0.5, "No keyboard detected or screen width is too small", {
+            fontSize: "2rem",
+            shadow: { fill: true, blur: 0, offsetY: 0 }
             })
             .setOrigin(0.5);
-            ;
             return;
         }
 

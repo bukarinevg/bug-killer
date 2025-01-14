@@ -48,7 +48,10 @@ var Basic = /** @class */ (function (_super) {
         return totalEnemies;
     };
     Basic.prototype.finishGame = function () {
+        var _a;
+        (_a = this.gameState.mainAudio) === null || _a === void 0 ? void 0 : _a.stop();
         this.gameState.active = false;
+        this.gameState.score = 0;
         this.physics.pause();
         this.gameState.pelletsLoop.destroy();
         this.add.text(gameConfig_1.default.width / 2, gameConfig_1.default.height / 2, "Game Over", {
@@ -67,7 +70,7 @@ var Basic = /** @class */ (function (_super) {
     Basic.prototype.showScore = function () {
         if (!this.gameState.scoreText || !this.gameState.enemies)
             return;
-        this.gameState.scoreText.setText("Enemies Left: ".concat(this.numOfTotalEnemies()));
+        this.gameState.scoreText.setText("Enemies Killed: ".concat(this.gameState.score));
     };
     Basic.prototype.restartGame = function () {
         this.scene.restart();
@@ -80,7 +83,7 @@ var Basic = /** @class */ (function (_super) {
         for (var yVal = 1; yVal <= 3; yVal++) {
             for (var xVal = 1; xVal <= 8; xVal++) {
                 enemies
-                    .create(50 * xVal, 50 * yVal, "bug1")
+                    .create(50 * xVal, 50 * yVal, "bug".concat(this.gameState.currentLevel))
                     .setGravityY(-gameConfig_1.default.gravity.y)
                     .setScale(0.6);
             }
